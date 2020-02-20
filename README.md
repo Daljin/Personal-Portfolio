@@ -1,6 +1,6 @@
 # Google Software Product Sprint
 
-This repo contains the projects you'll work on throughout SPS.
+This repo contains Eduardo's portfolio and SPS projects. My cat, Jett, is the best!
 
 To get started:
 
