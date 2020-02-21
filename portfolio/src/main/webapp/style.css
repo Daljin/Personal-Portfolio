@@ -1,9 +1,170 @@
-#content {
-  margin-left: auto;
-  margin-right: auto;
-  width: 650px;
+* {
+    box-sizing: border-box;
 }
 
-#greeting-container {
-  margin-top: 20px;
+.aboutContent {
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 15px;
+    padding-left: 15px;
+    width: 50%;
+}
+
+body {
+    background-color: #f7fbfc;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+.displayBox {
+    align-items: center;
+    background: #F9F7F7;
+    border-radius: 4px;
+    box-shadow: 0 3px 6px #3F72AF, 0 3px 6px #3F72AF;
+    max-width: 750px;
+    margin: 0 auto 30px auto;
+    overflow: hidden;
+}
+
+#education {
+    border-bottom: 1px solid #769fcd;
+    padding: 25px 15px;
+    text-align: center;
+}
+
+.educationBackground {
+    background: #d6e6f2;
+}
+
+.educationText {
+    padding: 20px;
+    text-align: left;
+}
+
+.educationText h2 {
+    font-weight: 200;
+    float: left;
+    margin: 0;
+}
+
+.educationText h3 {
+    clear: both;
+    color: #5e5757;
+    float: left;
+    font-size: 1em;
+    margin: 0 0 15px 0;
+}
+
+.educationText h4 {
+    color: #5e5757;
+    float: right;
+    margin: 0;
+}
+
+.educationText ul {
+    clear: both;
+    color: #5e5757;
+    margin: 0;
+    padding: 0 0 0 15px;
+}
+
+footer {
+    background: #b9d7ea;
+    padding: 25px 0;
+}
+
+.headStyle {
+    font-weight: 300;
+    margin: 0 0 30px 0;
+}
+
+
+.headStyle h2 {
+    font-weight: 200;
+    font-size: 29px;
+    margin-bottom: 25px;
+    margin-top: 0px;
+}
+
+#intro {
+    border-bottom: 1px solid #769fcd;
+    padding: 75px 15px;
+}
+
+#intro h2 {
+    text-align: center;
+}
+
+#intro p {
+    line-height: 1.3;
+    margin: 0;
+}
+
+
+p {
+    color: #5e5757;
+    font-size: 1em;
+}
+
+#project {
+    border-bottom: 1px solid #769fcd;
+    padding: 25px 15px;
+    text-align: center;
+}
+
+.projectBackground {
+    background: #d6e6f2;
+}
+
+.projectText {
+    padding: 20px;
+}
+
+.projectText h2 {
+    font-weight: 200;
+    margin-bottom: 2rem;
+    margin-top: 0;
+}
+
+#skill {
+    border-bottom: 1px solid #769fcd;
+    padding: 25px 15px;
+    text-align: center;
+}
+
+.skillBackground {
+    background: #f7fbfc;
+}
+
+#skill ul {
+    list-style: none;
+    margin: 0 auto 10px auto;
+    max-width: 750px;
+    padding: 0;
+}
+
+#skill li {
+    border-radius: 3px;
+    box-shadow: 0 1px 3px #3F72AF, 0 1px 3px #3F72AF;
+    display: inline-block;
+    font-size: 1.10em;
+    font-weight: lighter;
+    line-height: 1em;
+    margin: 4px;
+    overflow: hidden;
+    padding: 8px 5px;
+}
+
+.socialLink {
+    text-align: center;
+}
+
+.socialLink ul {
+    margin: 5px 0 0 0;
+    padding: 0;
+}
+
+.socialLink li {
+    display: inline-block;
+    list-style: none;
 }
