@@ -26,3 +26,11 @@ function addRandomGreeting() {
   const greetingContainer = document.getElementById('greeting-container');
   greetingContainer.innerText = greeting;
 }
+
+// The then() function returns a new promise.
+// Arrow functions () => x is short for () => { return x; }
+function getRandomGreeting(){
+    fetch('/data').then(response => response.text()).then((greet) => {
+        document.getElementById('random-greeting').innerText = greet;
+    });
+}
