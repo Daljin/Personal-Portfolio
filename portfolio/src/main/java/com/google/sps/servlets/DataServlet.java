@@ -30,7 +30,7 @@ public class DataServlet extends HttpServlet {
     private List<String> greetings = new ArrayList<>();
 
 
-    // Initializes the DataServlet object which runs when the browser is started.
+    /** Initializes the DataServlet object which runs when the browser is started. */
     @Override
     public void init() {
         greetings.add("Hola!");

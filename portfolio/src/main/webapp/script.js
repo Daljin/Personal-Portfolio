@@ -28,7 +28,7 @@ function addRandomGreeting() {
 }
 
 
-// Fetch a random greetings from /data, then convert to text content and display to the site.
+/** Fetch a random greetings from /data, then convert to text content and display to the site. */
 function getRandomGreeting() {
     fetch('/data').then(response => response.text()).then((greet) => {
         document.getElementById('random-greeting').innerText = greet;
