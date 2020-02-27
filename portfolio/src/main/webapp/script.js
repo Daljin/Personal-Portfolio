@@ -27,8 +27,8 @@ function addRandomGreeting() {
   greetingContainer.innerText = greeting;
 }
 
-// The then() function returns a new promise.
-// Arrow functions () => x is short for () => { return x; }
+
+// Fetch a random greetings from /data, then convert to text content and display to the site.
 function getRandomGreeting(){
     fetch('/data').then(response => response.text()).then((greet) => {
         document.getElementById('random-greeting').innerText = greet;

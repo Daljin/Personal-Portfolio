@@ -29,10 +29,10 @@ public class DataServlet extends HttpServlet {
 
     private List<String> greetings = new ArrayList<>();
 
-    //An init function is a predefine method to initialize an object after made.
-    //Runs when the browser is started.
+
+    // Initializes the DataServlet object which runs when the browser is started.
     @Override
-    public void init(){
+    public void init() {
         greetings.add("Hola!");
         greetings.add("Hello!");
         greetings.add("Hi!");
@@ -40,8 +40,8 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String greet = greetings.get((int) (Math.random() * greetings.size()));
+    String greeting = greetings.get((int) (Math.random() * greetings.size()));
     response.setContentType("text/html;");
-    response.getWriter().print(greet);
+    response.getWriter().print(greeting);
   }
 }
