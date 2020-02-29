@@ -33,6 +33,6 @@ function getRandomGreeting() {
     fetch('/data').then(response => response.json()).then((greet) => {
         // Convert the greet object to a string
         const greetElement = document.getElementById('random-greeting');
-        greetElement.innerHTML = greet;
+        greetElement.innerText = greet;
     });
 }
