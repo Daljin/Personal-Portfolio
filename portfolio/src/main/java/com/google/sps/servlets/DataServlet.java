@@ -56,13 +56,8 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the input from the form.
     String message = request.getParameter("messageInput");
-    //String email = request.getParameter("emailInput");
 
     messages.add(message);
-
-    // Respond with the result.
-    response.setContentType("text/html;");
-    response.getWriter().println(message);
 
     // Redirect the url to index.html.
     response.sendRedirect("index.html");
