@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
 
     private List<String> greetings = new ArrayList<>();
-
+    private List<String> messages = new ArrayList<>();
 
     /** Initializes the DataServlet object which runs when the browser is started. */
     @Override
@@ -50,5 +50,16 @@ public class DataServlet extends HttpServlet {
     // Send the Json as the response.
     response.setContentType("application/json;");
     response.getWriter().print(json);
+  }
+
+   @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Get the input from the form.
+    String message = request.getParameter("messageInput");
+
+    messages.add(message);
+
+    // Redirect the url to index.html.
+    response.sendRedirect("index.html");
   }
 }
