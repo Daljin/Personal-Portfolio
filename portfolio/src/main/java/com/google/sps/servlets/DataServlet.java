@@ -17,9 +17,14 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -43,23 +48,36 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String greeting = greetings.get((int) (Math.random() * greetings.size()));
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query = new Query("Comment").addSort("emailInput", SortDirection.DESCENDING);
+    PreparedQuery results = datastore.prepare(query);
+    
+    List<String> userEmail = new ArrayList<String>();
+    Map<String, String> userComment = new HashMap<String, String>();
+    for (Entity entity : results.asIterable()) {
+        String email = (String) entity.getProperty("emailInput");
+        String comment = (String) entity.getProperty("messageInput");
+        
+        userEmail.add(email);
+        userComment.put(email, comment);
+    }
 
-    // Converts a ServerStats instance into a JSON string using the Gson library.
+    String randomUser = userEmail.get((int)(Math.random() * userEmail.size()));
+    
     Gson gson = new Gson();
-    String json = gson.toJson(greeting);
 
-    // Send the Json as the response.
+    String merge = randomUser + "\n" + userComment.get(randomUser);
+
     response.setContentType("application/json;");
-    response.getWriter().print(json);
-  }
+    response.getWriter().println(gson.toJson(merge));
+}
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     persistMessage(request.getParameter("emailInput"), request.getParameter("messageInput"));
 
-    // Redirect the url to index.html.
-    response.sendRedirect("index.html");
+    // Redirect the url to commentPage.html.
+    response.sendRedirect("commentPage.html");
   }
 
   // Get the input from the form, and sends them to the datastore.

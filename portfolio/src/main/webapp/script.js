@@ -29,10 +29,10 @@ function addRandomGreeting() {
 
 
 /** Fetch a random greetings from /data, then convert to text content and display to the site. */
-function getRandomGreeting() {
+function getComment() {
     fetch('/data').then(response => response.json()).then((greet) => {
         // Convert the greet object to a string
-        const greetElement = document.getElementById('random-greeting');
+        const greetElement = document.getElementById('random-comment');
         greetElement.innerText = greet;
     });
 }
