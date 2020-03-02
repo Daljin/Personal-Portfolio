@@ -58,7 +58,7 @@ public class DataServlet extends HttpServlet {
    @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-      persistMessage(request.getParameter("emailInput"), request.getParameter("messageInput"));
+    persistMessage(request.getParameter("emailInput"), request.getParameter("messageInput"));
 
     // Redirect the url to index.html.
     response.sendRedirect("index.html");
