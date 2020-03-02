@@ -57,14 +57,15 @@ public class DataServlet extends HttpServlet {
 
    @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Get the input from the form.
-    String message = request.getParameter("messageInput");
-    
-    // Get the input from the form.
-    String message = request.getParameter("messageInput");
-    String email = request.getParameter("emailInput");
 
-    // Create an entity with a kind of Comment. 
+      persistMessage(request.getParameter("emailInput"), request.getParameter("messageInput"));
+
+    // Redirect the url to index.html.
+    response.sendRedirect("index.html");
+  }
+
+  // Get the input from the form, and sends them to the datastore.
+  public void persistMessage(String email, String message) {
     Entity commentEntity = new Entity("Comment");
     
     // Add properties to the entity: email and message.
@@ -74,8 +75,5 @@ public class DataServlet extends HttpServlet {
     // Store the entity by passing into the datastore.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
-    
-    // Redirect the url to index.html.
-    response.sendRedirect("index.html");
   }
 }
