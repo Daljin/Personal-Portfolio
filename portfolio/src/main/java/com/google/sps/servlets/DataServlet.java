@@ -42,7 +42,26 @@ public class DataServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(readEntity()));
   }
 
-  public List readEntity() {
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    persistMessage(request.getParameter("emailInput"), request.getParameter("messageInput"));
+
+    response.sendRedirect("commentPage.html");
+  }
+
+  // Get the input from the form, and sends them to the datastore.
+  private void persistMessage(String email, String message) {
+    Entity commentEntity = new Entity("Comment");
+
+    commentEntity.setProperty("emailInput", email);
+    commentEntity.setProperty("messageInput", message);
+
+    // Store the entity by passing into the datastore.
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(commentEntity);
+  }
+
+  private List<String> readEntity() {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query("Comment").addSort("emailInput", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
@@ -57,24 +76,5 @@ public class DataServlet extends HttpServlet {
     }
 
     return allComments;
-  }
-
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    persistMessage(request.getParameter("emailInput"), request.getParameter("messageInput"));
-
-    response.sendRedirect("commentPage.html");
-  }
-
-  // Get the input from the form, and sends them to the datastore.
-  public void persistMessage(String email, String message) {
-    Entity commentEntity = new Entity("Comment");
-
-    commentEntity.setProperty("emailInput", email);
-    commentEntity.setProperty("messageInput", message);
-
-    // Store the entity by passing into the datastore.
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(commentEntity);
   }
 }
