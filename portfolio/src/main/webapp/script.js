@@ -12,27 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * Adds a random greeting to the page.
- */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
-
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
-}
-
-
 /** Fetch a random greetings from /data, then convert to text content and display to the site. */
 function getComment() {
-    fetch('/data').then(response => response.json()).then((greet) => {
-        // Convert the greet object to a string
-        const greetElement = document.getElementById('random-comment');
-        greetElement.innerText = greet;
+    fetch('/data').then(response => response.json()).then((allComment) => {
+        // Convert the comment objects to a string
+        const commentElement = document.getElementById('comments');
+        allComment.forEach((allComment) => {
+            console.log(allComment);
+            commentElement.appendChild(createTaskElement(allComment));
+        })
     });
+}
+
+/** Creates an element that represents a comment. **/
+function createTaskElement(allComment) {
+  const commentElement = document.createElement('p');
+  commentElement.innerText = allComment
+  return commentElement;
 }

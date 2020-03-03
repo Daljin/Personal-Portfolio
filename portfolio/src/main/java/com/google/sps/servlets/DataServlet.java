@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
   private List<String> greetings = new ArrayList<>();
   private List<String> messages = new ArrayList<>();
+  private List<String> allComment = new ArrayList<String>();
 
   /** Initializes the DataServlet object which runs when the browser is started. */
   @Override
@@ -52,31 +53,20 @@ public class DataServlet extends HttpServlet {
     Query query = new Query("Comment").addSort("emailInput", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
     
-    List<String> userEmail = new ArrayList<String>();
-    Map<String, String> userComment = new HashMap<String, String>();
     for (Entity entity : results.asIterable()) {
-        String email = (String) entity.getProperty("emailInput");
-        String comment = (String) entity.getProperty("messageInput");
-        
-        userEmail.add(email);
-        userComment.put(email, comment);
+      String comment = (String) entity.getProperty("messageInput");
+      allComment.add(comment);
     }
 
-    String randomUser = userEmail.get((int)(Math.random() * userEmail.size()));
-    
     Gson gson = new Gson();
-
-    String merge = randomUser + "\n" + userComment.get(randomUser);
-
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(merge));
+    response.getWriter().println(gson.toJson(allComment));
 }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     persistMessage(request.getParameter("emailInput"), request.getParameter("messageInput"));
 
-    // Redirect the url to commentPage.html.
     response.sendRedirect("commentPage.html");
   }
 
