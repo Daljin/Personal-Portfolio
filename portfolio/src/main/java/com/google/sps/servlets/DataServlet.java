@@ -39,7 +39,7 @@ public class DataServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(readEntity()));
+    response.getWriter().println(gson.toJson(readMessages()));
   }
 
   @Override
@@ -61,7 +61,7 @@ public class DataServlet extends HttpServlet {
     datastore.put(commentEntity);
   }
 
-  private List<String> readEntity() {
+  private List<String> readMessages() {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query("Comment").addSort("emailInput", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
