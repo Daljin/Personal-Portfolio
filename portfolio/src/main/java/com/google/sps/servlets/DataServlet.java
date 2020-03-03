@@ -35,33 +35,29 @@ import javax.servlet.http.HttpServletResponse;
 // Tells the server which URL the servlet maps to.
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-  private List<String> greetings = new ArrayList<>();
-  private List<String> messages = new ArrayList<>();
-  private List<String> allComment = new ArrayList<String>();
-
-  /** Initializes the DataServlet object which runs when the browser is started. */
-  @Override
-  public void init() {
-    greetings.add("Hola!");
-    greetings.add("Hello!");
-    greetings.add("Hi!");
-  }
+  private List<String> allComments = new ArrayList<String>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    
+    readEntity();
+
+    Gson gson = new Gson();
+    response.setContentType("application/json;");
+    response.getWriter().println(gson.toJson(allComments));
+  }
+
+  public void readEntity (){
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query("Comment").addSort("emailInput", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
     
     for (Entity entity : results.asIterable()) {
       String comment = (String) entity.getProperty("messageInput");
-      allComment.add(comment);
+      if(comment != null)
+        allComments.add(comment);
     }
-
-    Gson gson = new Gson();
-    response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(allComment));
-}
+  }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {

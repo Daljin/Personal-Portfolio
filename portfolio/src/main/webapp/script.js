@@ -14,19 +14,19 @@
 
 /** Fetch a random greetings from /data, then convert to text content and display to the site. */
 function getComment() {
-    fetch('/data').then(response => response.json()).then((allComment) => {
+    fetch('/data').then(response => response.json()).then((allComments) => {
         // Convert the comment objects to a string
         const commentElement = document.getElementById('comments');
-        allComment.forEach((allComment) => {
-            console.log(allComment);
-            commentElement.appendChild(createTaskElement(allComment));
+        allComments.forEach((allComments) => {
+            console.log(allComments);
+            commentElement.appendChild(createCommentElement(allComments));
         })
     });
 }
 
 /** Creates an element that represents a comment. **/
-function createTaskElement(allComment) {
+function createCommentElement(allComments) {
   const commentElement = document.createElement('p');
-  commentElement.innerText = allComment
+  commentElement.innerText = allComments;
   return commentElement;
 }
