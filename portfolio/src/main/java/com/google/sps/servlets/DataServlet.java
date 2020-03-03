@@ -17,10 +17,15 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,40 +35,22 @@ import javax.servlet.http.HttpServletResponse;
 // Tells the server which URL the servlet maps to.
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-  private List<String> greetings = new ArrayList<>();
-  private List<String> messages = new ArrayList<>();
-
-  /** Initializes the DataServlet object which runs when the browser is started. */
-  @Override
-  public void init() {
-    greetings.add("Hola!");
-    greetings.add("Hello!");
-    greetings.add("Hi!");
-  }
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String greeting = greetings.get((int) (Math.random() * greetings.size()));
-
-    // Converts a ServerStats instance into a JSON string using the Gson library.
     Gson gson = new Gson();
-    String json = gson.toJson(greeting);
-
-    // Send the Json as the response.
     response.setContentType("application/json;");
-    response.getWriter().print(json);
+    response.getWriter().println(gson.toJson(readMessages()));
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     persistMessage(request.getParameter("emailInput"), request.getParameter("messageInput"));
 
-    // Redirect the url to index.html.
-    response.sendRedirect("index.html");
+    response.sendRedirect("commentPage.html");
   }
 
   // Get the input from the form, and sends them to the datastore.
-  public void persistMessage(String email, String message) {
+  private void persistMessage(String email, String message) {
     Entity commentEntity = new Entity("Comment");
 
     commentEntity.setProperty("emailInput", email);
@@ -72,5 +59,22 @@ public class DataServlet extends HttpServlet {
     // Store the entity by passing into the datastore.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
+  }
+
+  private List<String> readMessages() {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query = new Query("Comment").addSort("emailInput", SortDirection.DESCENDING);
+    PreparedQuery results = datastore.prepare(query);
+
+    List<String> allComments = new ArrayList<String>();
+
+    for (Entity entity : results.asIterable()) {
+      String comment = (String) entity.getProperty("messageInput");
+      if (comment != null) {
+        allComments.add(comment);
+      }
+    }
+
+    return allComments;
   }
 }
