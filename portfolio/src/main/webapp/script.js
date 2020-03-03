@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /** Fetch a random greetings from /data, then convert to text content and display to the site. */
-function getComment() {
+function getComments() {
     fetch('/data').then(response => response.json()).then((allComments) => {
         // Convert the comment objects to a string
         const commentElement = document.getElementById('comments');
