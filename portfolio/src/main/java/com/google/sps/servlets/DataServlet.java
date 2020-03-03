@@ -24,8 +24,8 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,28 +35,28 @@ import javax.servlet.http.HttpServletResponse;
 // Tells the server which URL the servlet maps to.
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-  private List<String> allComments = new ArrayList<String>();
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
-    readEntity();
-
     Gson gson = new Gson();
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(allComments));
+    response.getWriter().println(gson.toJson(readEntity()));
   }
 
-  public void readEntity (){
+  public List readEntity() {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query("Comment").addSort("emailInput", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
-    
+
+    List<String> allComments = new ArrayList<String>();
+
     for (Entity entity : results.asIterable()) {
       String comment = (String) entity.getProperty("messageInput");
-      if(comment != null)
+      if (comment != null) {
         allComments.add(comment);
+      }
     }
+
+    return allComments;
   }
 
   @Override

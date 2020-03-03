@@ -12,16 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** Fetch a random greetings from /data, then convert to text content and display to the site. */
+/**
+ * Fetch a random greetings from /data, then convert to text content and
+ * display to the site.
+ */
 function getComments() {
-    fetch('/data').then(response => response.json()).then((allComments) => {
-        // Convert the comment objects to a string
-        const commentElement = document.getElementById('comments');
-        allComments.forEach((allComments) => {
-            console.log(allComments);
-            commentElement.appendChild(createCommentElement(allComments));
-        })
-    });
+  fetch('/data').then(response => response.json()).then((allComments) => {
+    // Convert the comment objects to a string
+    const commentElement = document.getElementById('comments');
+    allComments.forEach((allComments) => {
+      console.log(allComments);
+      commentElement.appendChild(createCommentElement(allComments));
+    })
+  });
 }
 
 /** Creates an element that represents a comment. **/
