@@ -55,11 +55,10 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     System.out.println("Enter /data doPost");
 
-    String message = request.getParameter("message");
     String imageUrl = getUploadedFileUrl(request, "image");
 
     System.out.println("Entering function: persistMessage");
-    persistMessage(imageUrl, message);
+    persistMessage(imageUrl, request.getParameter("message"));
 
     //response.sendRedirect("commentPage.html");
     /*System.out.println("Before function call: persistMessage");
@@ -73,7 +72,7 @@ public class DataServlet extends HttpServlet {
     Entity commentEntity = new Entity("Comment");
 
     commentEntity.setProperty("image", image);
-    commentEntity.setProperty("messageInput", message);
+    commentEntity.setProperty("message", message);
 
     // Store the entity by passing into the datastore.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -82,7 +81,7 @@ public class DataServlet extends HttpServlet {
 
   private List<String> readMessages() {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query = new Query("Comment").addSort("messageInput", SortDirection.DESCENDING);
+    Query query = new Query("Comment").addSort("message", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
 
     System.out.println("Set prepared query.");
@@ -90,7 +89,7 @@ public class DataServlet extends HttpServlet {
     List<String> allComments = new ArrayList<String>();
 
     for (Entity entity : results.asIterable()) {
-      String comment = (String) entity.getProperty("messageInput");
+      String comment = (String) entity.getProperty("message");
       if (comment != null) {
         allComments.add(comment);
       }

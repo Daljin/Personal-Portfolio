@@ -111,7 +111,7 @@
                     <h2>Leave a Message and Image!</h2>
                     <form method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>">
                         <input type="file" name="image">
-                        <textarea id="message" name="messageInput" placeholder="Your messages" required></textarea>
+                        <textarea id="message" name="message" placeholder="Your messages" required></textarea>
                         <input type="submit" value="Submit">
                   </form>
               </div>
