@@ -19,15 +19,15 @@ import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-import com.google.appengine.api.images.ImagesService;
-import com.google.appengine.api.images.ImagesServiceFactory;
-import com.google.appengine.api.images.ServingUrlOptions;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.ServingUrlOptions;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,24 +47,15 @@ public class DataServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
     response.setContentType("application/json;");
-    System.out.println("Printing json messages");
     response.getWriter().println(gson.toJson(readMessages()));
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("Enter /data doPost");
-
     String imageUrl = getUploadedFileUrl(request, "image");
-
-    System.out.println("Entering function: persistMessage");
     persistMessage(imageUrl, request.getParameter("message"));
 
-    //response.sendRedirect("commentPage.html");
-    /*System.out.println("Before function call: persistMessage");
-    persistMessage("test", request.getParameter("messageInput"));
-    System.out.println("Redirect to commentPage.");
-    response.sendRedirect("commentPage.html");*/
+    response.sendRedirect("/commentPage.html");
   }
 
   // Get the input from the form, and sends them to the datastore.
@@ -84,8 +75,6 @@ public class DataServlet extends HttpServlet {
     Query query = new Query("Comment").addSort("message", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
 
-    System.out.println("Set prepared query.");
-
     List<String> allComments = new ArrayList<String>();
 
     for (Entity entity : results.asIterable()) {
@@ -94,12 +83,11 @@ public class DataServlet extends HttpServlet {
         allComments.add(comment);
       }
     }
-    System.out.println("Exited loop and returning comments.");
 
     return allComments;
   }
 
-  //From the example.
+  // From the example.
   private String getUploadedFileUrl(HttpServletRequest request, String image) {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);

@@ -25,7 +25,6 @@ function getComments() {
       commentElement.appendChild(createCommentElement(allComments));
     })
   });
-  
 }
 
 /** Creates an element that represents a comment. **/
