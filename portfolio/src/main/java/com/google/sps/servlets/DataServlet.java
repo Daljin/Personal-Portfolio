@@ -14,8 +14,16 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.blobstore.BlobInfo;
+import com.google.appengine.api.blobstore.BlobInfoFactory;
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.images.ServingUrlOptions;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
@@ -39,21 +47,23 @@ public class DataServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
     response.setContentType("application/json;");
+    System.out.println("Printing json messages");
     response.getWriter().println(gson.toJson(readMessages()));
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    persistMessage(request.getParameter("emailInput"), request.getParameter("messageInput"));
-
+    System.out.println("Before function call: persistMessage");
+    persistMessage("test", request.getParameter("messageInput"));
+    System.out.println("Redirect to commentPage.");
     response.sendRedirect("commentPage.html");
   }
 
   // Get the input from the form, and sends them to the datastore.
-  private void persistMessage(String email, String message) {
+  private void persistMessage(String image, String message) {
     Entity commentEntity = new Entity("Comment");
 
-    commentEntity.setProperty("emailInput", email);
+    commentEntity.setProperty("image", image);
     commentEntity.setProperty("messageInput", message);
 
     // Store the entity by passing into the datastore.
@@ -63,8 +73,10 @@ public class DataServlet extends HttpServlet {
 
   private List<String> readMessages() {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query = new Query("Comment").addSort("emailInput", SortDirection.DESCENDING);
+    Query query = new Query("Comment").addSort("messageInput", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
+
+    System.out.println("Set prepared query.");
 
     List<String> allComments = new ArrayList<String>();
 
@@ -74,7 +86,38 @@ public class DataServlet extends HttpServlet {
         allComments.add(comment);
       }
     }
+    System.out.println("Exited loop and returning comments.");
 
     return allComments;
+  }
+
+  //From the example.
+  private String getUploadedFileUrl(HttpServletRequest request, String image) {
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+    List<BlobKey> blobKeys = blobs.get("image");
+
+    // User submitted form without selecting a file, so we can't get a URL. (devserver)
+    if (blobKeys == null || blobKeys.isEmpty()) {
+      return null;
+    }
+
+    // Our form only contains a single file input, so get the first index.
+    BlobKey blobKey = blobKeys.get(0);
+
+    // User submitted form without selecting a file, so we can't get a URL. (live server)
+    BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
+    if (blobInfo.getSize() == 0) {
+      blobstoreService.delete(blobKey);
+      return null;
+    }
+
+    // We could check the validity of the file here, e.g. to make sure it's an image file
+    // https://stackoverflow.com/q/10779564/873165
+
+    // Use ImagesService to get a URL that points to the uploaded file.
+    ImagesService imagesService = ImagesServiceFactory.getImagesService();
+    ServingUrlOptions options = ServingUrlOptions.Builder.withBlobKey(blobKey);
+    return imagesService.getServingUrl(options);
   }
 }
