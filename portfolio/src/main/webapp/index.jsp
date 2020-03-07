@@ -1,3 +1,6 @@
+<%-- The Java code in this JSP file runs on the server when the user navigates
+     to the homepage. This allows us to insert the Blobstore upload URL into the
+     form without building the HTML using print statements in a servlet. --%>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
 <% BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
@@ -106,7 +109,7 @@
           <div class="socialLink">
               <div class="contact" >
                     <h2>Leave a Message and Image!</h2>
-                    <form action="<%= uploadUrl%>" method="POST" enctype="multipart/form-data">
+                    <form method="POST" enctype="multipart/form-data" action="<%= uploadUrl %>">
                         <input type="file" name="image">
                         <textarea id="message" name="messageInput" placeholder="Your messages" required></textarea>
                         <input type="submit" value="Submit">

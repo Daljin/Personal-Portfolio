@@ -21,9 +21,9 @@ import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.ServingUrlOptions;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.images.ServingUrlOptions;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
@@ -53,10 +53,19 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("Before function call: persistMessage");
+    System.out.println("Enter /data doPost");
+
+    String message = request.getParameter("message");
+    String imageUrl = getUploadedFileUrl(request, "image");
+
+    System.out.println("Entering function: persistMessage");
+    persistMessage(imageUrl, message);
+
+    //response.sendRedirect("commentPage.html");
+    /*System.out.println("Before function call: persistMessage");
     persistMessage("test", request.getParameter("messageInput"));
     System.out.println("Redirect to commentPage.");
-    response.sendRedirect("commentPage.html");
+    response.sendRedirect("commentPage.html");*/
   }
 
   // Get the input from the form, and sends them to the datastore.
