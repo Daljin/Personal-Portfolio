@@ -1,0 +1,3 @@
+There's an error 404 when you are redirected to commentPage.html
+index.html is a temporary solution to an issue that's causing an older version of index.html to be previewed instead of index.jsp.
+index.html is only redirecting user to index.jsp
