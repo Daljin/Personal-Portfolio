@@ -14,12 +14,20 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.blobstore.BlobInfo;
+import com.google.appengine.api.blobstore.BlobInfoFactory;
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.ServingUrlOptions;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,17 +52,18 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    persistMessage(request.getParameter("emailInput"), request.getParameter("messageInput"));
+    String imageUrl = getUploadedFileUrl(request, "image");
+    persistMessage(imageUrl, request.getParameter("message"));
 
-    response.sendRedirect("commentPage.html");
+    response.sendRedirect("/commentPage.html");
   }
 
   // Get the input from the form, and sends them to the datastore.
-  private void persistMessage(String email, String message) {
+  private void persistMessage(String image, String message) {
     Entity commentEntity = new Entity("Comment");
 
-    commentEntity.setProperty("emailInput", email);
-    commentEntity.setProperty("messageInput", message);
+    commentEntity.setProperty("image", image);
+    commentEntity.setProperty("message", message);
 
     // Store the entity by passing into the datastore.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -63,18 +72,44 @@ public class DataServlet extends HttpServlet {
 
   private List<String> readMessages() {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query = new Query("Comment").addSort("emailInput", SortDirection.DESCENDING);
+    Query query = new Query("Comment").addSort("message", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
 
     List<String> allComments = new ArrayList<String>();
 
     for (Entity entity : results.asIterable()) {
-      String comment = (String) entity.getProperty("messageInput");
+      String comment = (String) entity.getProperty("message");
       if (comment != null) {
         allComments.add(comment);
       }
     }
 
     return allComments;
+  }
+
+    private String getUploadedFileUrl(HttpServletRequest request, String image) {
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+    List<BlobKey> blobKeys = blobs.get("image");
+
+    // User submitted form without selecting a file, so we can't get a URL. (devserver)
+    if (blobKeys == null || blobKeys.isEmpty()) {
+      return null;
+    }
+
+    // Our form only contains a single file input, so get the first index.
+    BlobKey blobKey = blobKeys.get(0);
+
+    // User submitted form without selecting a file, so we can't get a URL. (live server)
+    BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
+    if (blobInfo.getSize() == 0) {
+      blobstoreService.delete(blobKey);
+      return null;
+    }
+
+    // Use ImagesService to get a URL that points to the uploaded file.
+    ImagesService imagesService = ImagesServiceFactory.getImagesService();
+    ServingUrlOptions options = ServingUrlOptions.Builder.withBlobKey(blobKey);
+    return imagesService.getServingUrl(options);
   }
 }
