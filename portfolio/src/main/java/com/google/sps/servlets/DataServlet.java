@@ -87,8 +87,7 @@ public class DataServlet extends HttpServlet {
     return allComments;
   }
 
-  // From the example.
-  private String getUploadedFileUrl(HttpServletRequest request, String image) {
+    private String getUploadedFileUrl(HttpServletRequest request, String image) {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
     List<BlobKey> blobKeys = blobs.get("image");
@@ -107,9 +106,6 @@ public class DataServlet extends HttpServlet {
       blobstoreService.delete(blobKey);
       return null;
     }
-
-    // We could check the validity of the file here, e.g. to make sure it's an image file
-    // https://stackoverflow.com/q/10779564/873165
 
     // Use ImagesService to get a URL that points to the uploaded file.
     ImagesService imagesService = ImagesServiceFactory.getImagesService();
