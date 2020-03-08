@@ -1,4 +1,0 @@
-There's an error 404 when you are redirected to commentPage.html
-Error 405 HTTP method GET is not supported by this URL - Whenever you submit. 
-index.html is a temporary solution to an issue that's causing an older version of index.html to be previewed instead of index.jsp.
-index.html is only redirecting user to index.jsp
