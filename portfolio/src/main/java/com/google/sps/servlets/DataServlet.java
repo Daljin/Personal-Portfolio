@@ -70,21 +70,26 @@ public class DataServlet extends HttpServlet {
     datastore.put(commentEntity);
   }
 
-  private List<String> readMessages() {
+  private Map<String, String> readMessages() {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query("Comment").addSort("message", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
 
-    List<String> allComments = new ArrayList<String>();
+    Map<String, String> imageComment = new HashMap<String, String>();
+    //List<String> allComments = new ArrayList<String>();
 
     for (Entity entity : results.asIterable()) {
       String comment = (String) entity.getProperty("message");
-      if (comment != null) {
-        allComments.add(comment);
+      String image = (String) entity.getProperty("image");
+      //if (comment != null) {
+        //allComments.add(comment);
+      //}
+      if(comment != null && image != null) {
+          imageComment.put(image, comment);
       }
     }
-
-    return allComments;
+    return imageComment;
+    //return allComments;
   }
 
     private String getUploadedFileUrl(HttpServletRequest request, String image) {
