@@ -17,19 +17,37 @@
  * display to the site.
  */
 function getComments() {
-  fetch('/data').then(response => response.json()).then((allComments) => {
+  fetch('/data').then(response => response.json()).then((imageComment) => {
     // Convert the comment objects to a string
     const commentElement = document.getElementById('comments');
-    allComments.forEach((allComments) => {
-      console.log(allComments);
-      commentElement.appendChild(createCommentElement(allComments));
+    
+    Object.keys(imageComment).forEach(image => {
+      console.log(imageComment);
+      commentElement.appendChild(createDisplayElement()).appendChild(createImageElement(image)).appendChild(createCommentElement(imageComment[image]));
+      commentElement.appendChild(createDisplayElement()).appendChild(createCommentElement(imageComment[image]));
     })
   });
 }
 
-/** Creates an element that represents a comment. **/
-function createCommentElement(allComments) {
-  const commentElement = document.createElement('p');
-  commentElement.innerText = allComments;
-  return commentElement;
+function createDisplayElement() {
+  const displayBox = document.createElement('div');
+  displayBox.setAttribute('class', 'displayBox');
+  return displayBox;
+}
+
+function createImageElement(image) {
+  const imageElement = document.createElement('img');
+  imageElement.style.display = "block";
+  imageElement.style.margin = "0 auto";
+  imageElement.src = image;
+
+  return imageElement;
+}
+
+function createCommentElement(message) {
+    const commentElement = document.createElement('p');
+    commentElement.style.textAlign = "center";
+    commentElement.innerText = message;
+
+    return commentElement;
 }
