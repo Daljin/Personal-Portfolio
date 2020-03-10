@@ -17,19 +17,33 @@
  * display to the site.
  */
 function getComments() {
-  fetch('/data').then(response => response.json()).then((allComments) => {
+  fetch('/data').then(response => response.json()).then((imageComments) => {
     // Convert the comment objects to a string
     const commentElement = document.getElementById('comments');
-    allComments.forEach((allComments) => {
-      console.log(allComments);
-      commentElement.appendChild(createCommentElement(allComments));
+
+    imageComments.forEach((imageComment) => {
+      commentElement.appendChild(createDisplayElement(imageComment));
     })
   });
 }
 
-/** Creates an element that represents a comment. **/
-function createCommentElement(allComments) {
+function createDisplayElement(imageComment) {
+  const displayBox = document.createElement('div');
+  displayBox.setAttribute('class', 'displayBox');
+
+  const imageElement = document.createElement('img');
+  imageElement.style.display = 'block';
+  imageElement.style.margin = '0 auto';
+  imageElement.style.padding = '25px 0px';
+  imageElement.src = imageComment.image;
+
   const commentElement = document.createElement('p');
-  commentElement.innerText = allComments;
-  return commentElement;
+  commentElement.style.textAlign = 'center';
+  commentElement.style.margin = '0';
+  commentElement.style.padding = '0px 0px 10px 0px';
+  commentElement.innerText = imageComment.message;
+
+  displayBox.appendChild(imageElement);
+  displayBox.appendChild(commentElement);
+  return displayBox;
 }
