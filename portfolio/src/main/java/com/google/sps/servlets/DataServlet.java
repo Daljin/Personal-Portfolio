@@ -76,16 +76,16 @@ public class DataServlet extends HttpServlet {
     Query query = new Query("Comment").addSort("message", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
 
-    List<ImageMessage> imageMessage = new ArrayList();
+    List<ImageMessage> imageMessages = new ArrayList();
 
     for (Entity entity : results.asIterable()) {
       String message = (String) entity.getProperty("message");
       String image = (String) entity.getProperty("image");
       if (message != null && image != null) {
-        imageMessage.add(new ImageMessage(message, image));
+        imageMessages.add(new ImageMessage(message, image));
       }
     }
-    return imageMessage;
+    return imageMessages;
   }
 
   private String getUploadedFileUrl(HttpServletRequest request, String image) {
