@@ -29,6 +29,7 @@ import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
 import com.google.gson.Gson;
+import com.google.sps.data.ImageMessage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,24 +71,24 @@ public class DataServlet extends HttpServlet {
     datastore.put(commentEntity);
   }
 
-  private Map<String, String> readMessages() {
+  private List<ImageMessage> readMessages() {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query("Comment").addSort("message", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
 
-    Map<String, String> imageComment = new HashMap<String, String>();
+    List<ImageMessage> imageMessage = new ArrayList();
 
     for (Entity entity : results.asIterable()) {
-      String comment = (String) entity.getProperty("message");
+      String message = (String) entity.getProperty("message");
       String image = (String) entity.getProperty("image");
-      if(comment != null && image != null) {
-          imageComment.put(image, comment);
+      if (message != null && image != null) {
+        imageMessage.add(new ImageMessage(message, image));
       }
     }
-    return imageComment;
+    return imageMessage;
   }
 
-    private String getUploadedFileUrl(HttpServletRequest request, String image) {
+  private String getUploadedFileUrl(HttpServletRequest request, String image) {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
     List<BlobKey> blobKeys = blobs.get("image");

@@ -17,37 +17,33 @@
  * display to the site.
  */
 function getComments() {
-  fetch('/data').then(response => response.json()).then((imageComment) => {
+  fetch('/data').then(response => response.json()).then((imageComments) => {
     // Convert the comment objects to a string
     const commentElement = document.getElementById('comments');
-    
-    Object.keys(imageComment).forEach(image => {
-      console.log(imageComment);
-      commentElement.appendChild(createDisplayElement()).appendChild(createImageElement(image)).appendChild(createCommentElement(imageComment[image]));
-      commentElement.appendChild(createDisplayElement()).appendChild(createCommentElement(imageComment[image]));
+
+    imageComments.forEach((imageComment) => {
+      commentElement.appendChild(createDisplayElement(imageComment));
     })
   });
 }
 
-function createDisplayElement() {
+function createDisplayElement(imageComment) {
   const displayBox = document.createElement('div');
   displayBox.setAttribute('class', 'displayBox');
-  return displayBox;
-}
 
-function createImageElement(image) {
   const imageElement = document.createElement('img');
-  imageElement.style.display = "block";
-  imageElement.style.margin = "0 auto";
-  imageElement.src = image;
+  imageElement.style.display = 'block';
+  imageElement.style.margin = '0 auto';
+  imageElement.style.padding = '25px 0px';
+  imageElement.src = imageComment.image;
 
-  return imageElement;
-}
+  const commentElement = document.createElement('p');
+  commentElement.style.textAlign = 'center';
+  commentElement.style.margin = '0';
+  commentElement.style.padding = '0px 0px 10px 0px';
+  commentElement.innerText = imageComment.message;
 
-function createCommentElement(message) {
-    const commentElement = document.createElement('p');
-    commentElement.style.textAlign = "center";
-    commentElement.innerText = message;
-
-    return commentElement;
+  displayBox.appendChild(imageElement);
+  displayBox.appendChild(commentElement);
+  return displayBox;
 }
